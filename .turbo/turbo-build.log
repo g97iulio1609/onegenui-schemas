@@ -1,22 +1,23 @@
 
+
 > @onegenui/schemas@0.1.0 build /Users/giulioleone/Sviluppo/genUi/json-render/packages/schemas
 > tsup
 
-CLI Building entry: src/index.ts
-CLI Using tsconfig: tsconfig.json
-CLI tsup v8.5.1
-CLI Using tsup config: /Users/giulioleone/Sviluppo/genUi/json-render/packages/schemas/tsup.config.ts
-CLI Target: es2020
-CLI Cleaning output folder
-CJS Build start
-ESM Build start
-CJS dist/index.cjs     10.49 KB
-CJS dist/index.cjs.map 18.02 KB
-CJS ⚡️ Build success in 72ms
-ESM dist/index.js     7.01 KB
-ESM dist/index.js.map 17.23 KB
-ESM ⚡️ Build success in 72ms
+[34mCLI[39m Building entry: src/index.ts
+[34mCLI[39m Using tsconfig: tsconfig.json
+[34mCLI[39m tsup v8.5.1
+[34mCLI[39m Using tsup config: /Users/giulioleone/Sviluppo/genUi/json-render/packages/schemas/tsup.config.ts
+[34mCLI[39m Target: es2020
+[34mCLI[39m Cleaning output folder
+[34mCJS[39m Build start
+[34mESM[39m Build start
+[32mESM[39m [1mdist/index.js     [22m[32m7.01 KB[39m
+[32mESM[39m [1mdist/index.js.map [22m[32m17.23 KB[39m
+[32mESM[39m ⚡️ Build success in 44ms
+[32mCJS[39m [1mdist/index.cjs     [22m[32m10.49 KB[39m
+[32mCJS[39m [1mdist/index.cjs.map [22m[32m18.02 KB[39m
+[32mCJS[39m ⚡️ Build success in 46ms
 DTS Build start
-DTS ⚡️ Build success in 998ms
+DTS ⚡️ Build success in 967ms
 DTS dist/index.d.cts 5.32 KB
 DTS dist/index.d.ts  5.32 KB
