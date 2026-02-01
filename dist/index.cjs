@@ -50,15 +50,18 @@ var chartDatumSchema = import_zod.z.object({
 });
 var listItemSchema = import_zod.z.lazy(
   () => import_zod.z.object({
-    id: import_zod.z.string().nullable().optional(),
+    id: import_zod.z.string().optional(),
     text: import_zod.z.string().optional(),
     description: import_zod.z.string().nullable().optional(),
     primary: import_zod.z.string().optional(),
     secondary: import_zod.z.string().nullable().optional(),
     status: import_zod.z.string().nullable().optional(),
     subItems: import_zod.z.array(listItemSchema).nullable().optional()
-  }).catchall(import_zod.z.unknown()).transform((item) => ({
-    id: item.id ?? null,
+  }).catchall(import_zod.z.unknown()).refine(
+    (item) => item.text || item.primary,
+    "Either 'text' or 'primary' is required"
+  ).transform((item) => ({
+    id: item.id ?? void 0,
     text: item.text ?? item.primary ?? "",
     description: item.description ?? item.secondary ?? null,
     status: item.status ?? null,
@@ -80,22 +83,22 @@ var listItemSchema = import_zod.z.lazy(
 );
 var timelineItemSchema = import_zod.z.lazy(
   () => import_zod.z.object({
-    id: import_zod.z.string().nullable(),
-    title: import_zod.z.string(),
-    date: import_zod.z.string(),
-    description: import_zod.z.string().nullable(),
-    status: import_zod.z.string().nullable(),
-    subItems: import_zod.z.array(timelineItemSchema).nullable()
+    id: import_zod.z.string().optional(),
+    title: import_zod.z.string().describe("Event title (REQUIRED)"),
+    date: import_zod.z.string().describe("Event date/time (REQUIRED)"),
+    description: import_zod.z.string().nullable().optional(),
+    status: import_zod.z.string().nullable().optional(),
+    subItems: import_zod.z.array(timelineItemSchema).nullable().optional()
   }).catchall(import_zod.z.unknown())
 );
 var toDoItemSchema = import_zod.z.lazy(
   () => import_zod.z.object({
-    id: import_zod.z.string(),
-    text: import_zod.z.string(),
-    time: import_zod.z.string().nullable(),
-    priority: import_zod.z.enum(["high", "medium", "low"]).nullable(),
-    status: import_zod.z.enum(["pending", "in-progress", "done"]).nullable(),
-    subItems: import_zod.z.array(toDoItemSchema).nullable()
+    id: import_zod.z.string().describe("Unique ID (REQUIRED)"),
+    text: import_zod.z.string().describe("Task text (REQUIRED)"),
+    time: import_zod.z.string().nullable().optional(),
+    priority: import_zod.z.enum(["high", "medium", "low"]).nullable().optional(),
+    status: import_zod.z.enum(["pending", "in-progress", "done"]).nullable().optional(),
+    subItems: import_zod.z.array(toDoItemSchema).nullable().optional()
   }).catchall(import_zod.z.unknown())
 );
 var tableRowSchema = import_zod.z.lazy(
@@ -115,25 +118,25 @@ var mindMapNodeSchema = import_zod.z.lazy(
   }).catchall(import_zod.z.unknown())
 );
 var graphNodeSchema = import_zod.z.object({
-  id: import_zod.z.string(),
-  label: import_zod.z.string(),
-  description: import_zod.z.string().nullable(),
-  group: import_zod.z.string().nullable(),
-  type: import_zod.z.string().nullable(),
-  color: import_zod.z.string().nullable(),
-  size: import_zod.z.number().nullable(),
-  icon: import_zod.z.string().nullable()
+  id: import_zod.z.string().describe("Node ID (REQUIRED)"),
+  label: import_zod.z.string().describe("Node label (REQUIRED)"),
+  description: import_zod.z.string().nullable().optional(),
+  group: import_zod.z.string().nullable().optional(),
+  type: import_zod.z.string().nullable().optional(),
+  color: import_zod.z.string().nullable().optional(),
+  size: import_zod.z.number().nullable().optional(),
+  icon: import_zod.z.string().nullable().optional()
 }).catchall(import_zod.z.unknown());
 var graphEdgeSchema = import_zod.z.object({
-  id: import_zod.z.string().nullable(),
-  from: import_zod.z.string().nullable(),
-  to: import_zod.z.string().nullable(),
-  source: import_zod.z.string().nullable(),
-  target: import_zod.z.string().nullable(),
-  label: import_zod.z.string().nullable(),
-  weight: import_zod.z.number().nullable(),
-  directed: import_zod.z.boolean().nullable(),
-  color: import_zod.z.string().nullable()
+  id: import_zod.z.string().optional(),
+  from: import_zod.z.string().nullable().optional(),
+  to: import_zod.z.string().nullable().optional(),
+  source: import_zod.z.string().nullable().optional(),
+  target: import_zod.z.string().nullable().optional(),
+  label: import_zod.z.string().nullable().optional(),
+  weight: import_zod.z.number().nullable().optional(),
+  directed: import_zod.z.boolean().nullable().optional(),
+  color: import_zod.z.string().nullable().optional()
 }).refine(
   (data) => data.from || data.source,
   "Either 'from' or 'source' must be provided"
@@ -143,31 +146,31 @@ var graphEdgeSchema = import_zod.z.object({
 );
 var kanbanItemSchema = import_zod.z.lazy(
   () => import_zod.z.object({
-    id: import_zod.z.string(),
-    title: import_zod.z.string(),
-    description: import_zod.z.string().nullable(),
-    assignee: import_zod.z.string().nullable(),
-    priority: import_zod.z.enum(["low", "medium", "high"]).nullable(),
-    dueDate: import_zod.z.string().nullable(),
-    tags: import_zod.z.array(import_zod.z.string()).nullable(),
-    subItems: import_zod.z.array(kanbanItemSchema).nullable()
+    id: import_zod.z.string().describe("Item ID (REQUIRED)"),
+    title: import_zod.z.string().describe("Item title (REQUIRED)"),
+    description: import_zod.z.string().nullable().optional(),
+    assignee: import_zod.z.string().nullable().optional(),
+    priority: import_zod.z.enum(["low", "medium", "high"]).nullable().optional(),
+    dueDate: import_zod.z.string().nullable().optional(),
+    tags: import_zod.z.array(import_zod.z.string()).nullable().optional(),
+    subItems: import_zod.z.array(kanbanItemSchema).nullable().optional()
   }).catchall(import_zod.z.unknown())
 );
 var kanbanColumnSchema = import_zod.z.object({
-  id: import_zod.z.string(),
-  title: import_zod.z.string(),
-  color: import_zod.z.string().nullable(),
-  items: import_zod.z.array(kanbanItemSchema).nullable()
+  id: import_zod.z.string().describe("Column ID (REQUIRED)"),
+  title: import_zod.z.string().describe("Column title (REQUIRED)"),
+  color: import_zod.z.string().nullable().optional(),
+  items: import_zod.z.array(kanbanItemSchema).nullable().optional()
 });
 var ganttTaskSchema = import_zod.z.lazy(
   () => import_zod.z.object({
-    id: import_zod.z.string(),
-    name: import_zod.z.string(),
-    start: import_zod.z.string(),
-    end: import_zod.z.string(),
-    progress: import_zod.z.number().nullable(),
-    dependencies: import_zod.z.array(import_zod.z.string()).nullable(),
-    subTasks: import_zod.z.array(ganttTaskSchema).nullable()
+    id: import_zod.z.string().describe("Task ID (REQUIRED)"),
+    name: import_zod.z.string().describe("Task name (REQUIRED)"),
+    start: import_zod.z.string().describe("Start date (REQUIRED)"),
+    end: import_zod.z.string().describe("End date (REQUIRED)"),
+    progress: import_zod.z.number().nullable().optional(),
+    dependencies: import_zod.z.array(import_zod.z.string()).nullable().optional(),
+    subTasks: import_zod.z.array(ganttTaskSchema).nullable().optional()
   }).catchall(import_zod.z.unknown())
 );
 var emailItemSchema = import_zod.z.object({

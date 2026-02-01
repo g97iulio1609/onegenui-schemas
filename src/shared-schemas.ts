@@ -24,7 +24,7 @@ export const chartDatumSchema = z.object({
 export const listItemSchema: z.ZodType<Record<string, unknown>> = z.lazy(() =>
   z
     .object({
-      id: z.string().nullable().optional(),
+      id: z.string().optional(),
       text: z.string().optional(),
       description: z.string().nullable().optional(),
       primary: z.string().optional(),
@@ -33,8 +33,12 @@ export const listItemSchema: z.ZodType<Record<string, unknown>> = z.lazy(() =>
       subItems: z.array(listItemSchema).nullable().optional(),
     })
     .catchall(z.unknown())
+    .refine(
+      (item) => item.text || item.primary,
+      "Either 'text' or 'primary' is required"
+    )
     .transform((item) => ({
-      id: item.id ?? null,
+      id: item.id ?? undefined,
       text: item.text ?? item.primary ?? "",
       description: item.description ?? item.secondary ?? null,
       status: item.status ?? null,
@@ -60,12 +64,12 @@ export const timelineItemSchema: z.ZodType<Record<string, unknown>> = z.lazy(
   () =>
     z
       .object({
-        id: z.string().nullable(),
-        title: z.string(),
-        date: z.string(),
-        description: z.string().nullable(),
-        status: z.string().nullable(),
-        subItems: z.array(timelineItemSchema).nullable(),
+        id: z.string().optional(),
+        title: z.string().describe("Event title (REQUIRED)"),
+        date: z.string().describe("Event date/time (REQUIRED)"),
+        description: z.string().nullable().optional(),
+        status: z.string().nullable().optional(),
+        subItems: z.array(timelineItemSchema).nullable().optional(),
       })
       .catchall(z.unknown()),
 );
@@ -73,12 +77,12 @@ export const timelineItemSchema: z.ZodType<Record<string, unknown>> = z.lazy(
 export const toDoItemSchema: z.ZodType<Record<string, unknown>> = z.lazy(() =>
   z
     .object({
-      id: z.string(),
-      text: z.string(),
-      time: z.string().nullable(),
-      priority: z.enum(["high", "medium", "low"]).nullable(),
-      status: z.enum(["pending", "in-progress", "done"]).nullable(),
-      subItems: z.array(toDoItemSchema).nullable(),
+      id: z.string().describe("Unique ID (REQUIRED)"),
+      text: z.string().describe("Task text (REQUIRED)"),
+      time: z.string().nullable().optional(),
+      priority: z.enum(["high", "medium", "low"]).nullable().optional(),
+      status: z.enum(["pending", "in-progress", "done"]).nullable().optional(),
+      subItems: z.array(toDoItemSchema).nullable().optional(),
     })
     .catchall(z.unknown()),
 );
@@ -119,28 +123,28 @@ export const mindMapNodeSchema: z.ZodType<Record<string, unknown>> = z.lazy(
 
 export const graphNodeSchema = z
   .object({
-    id: z.string(),
-    label: z.string(),
-    description: z.string().nullable(),
-    group: z.string().nullable(),
-    type: z.string().nullable(),
-    color: z.string().nullable(),
-    size: z.number().nullable(),
-    icon: z.string().nullable(),
+    id: z.string().describe("Node ID (REQUIRED)"),
+    label: z.string().describe("Node label (REQUIRED)"),
+    description: z.string().nullable().optional(),
+    group: z.string().nullable().optional(),
+    type: z.string().nullable().optional(),
+    color: z.string().nullable().optional(),
+    size: z.number().nullable().optional(),
+    icon: z.string().nullable().optional(),
   })
   .catchall(z.unknown());
 
 export const graphEdgeSchema = z
   .object({
-    id: z.string().nullable(),
-    from: z.string().nullable(),
-    to: z.string().nullable(),
-    source: z.string().nullable(),
-    target: z.string().nullable(),
-    label: z.string().nullable(),
-    weight: z.number().nullable(),
-    directed: z.boolean().nullable(),
-    color: z.string().nullable(),
+    id: z.string().optional(),
+    from: z.string().nullable().optional(),
+    to: z.string().nullable().optional(),
+    source: z.string().nullable().optional(),
+    target: z.string().nullable().optional(),
+    label: z.string().nullable().optional(),
+    weight: z.number().nullable().optional(),
+    directed: z.boolean().nullable().optional(),
+    color: z.string().nullable().optional(),
   })
   .refine(
     (data) => data.from || data.source,
@@ -158,23 +162,23 @@ export const graphEdgeSchema = z
 export const kanbanItemSchema: z.ZodType<Record<string, unknown>> = z.lazy(() =>
   z
     .object({
-      id: z.string(),
-      title: z.string(),
-      description: z.string().nullable(),
-      assignee: z.string().nullable(),
-      priority: z.enum(["low", "medium", "high"]).nullable(),
-      dueDate: z.string().nullable(),
-      tags: z.array(z.string()).nullable(),
-      subItems: z.array(kanbanItemSchema).nullable(),
+      id: z.string().describe("Item ID (REQUIRED)"),
+      title: z.string().describe("Item title (REQUIRED)"),
+      description: z.string().nullable().optional(),
+      assignee: z.string().nullable().optional(),
+      priority: z.enum(["low", "medium", "high"]).nullable().optional(),
+      dueDate: z.string().nullable().optional(),
+      tags: z.array(z.string()).nullable().optional(),
+      subItems: z.array(kanbanItemSchema).nullable().optional(),
     })
     .catchall(z.unknown()),
 );
 
 export const kanbanColumnSchema = z.object({
-  id: z.string(),
-  title: z.string(),
-  color: z.string().nullable(),
-  items: z.array(kanbanItemSchema).nullable(),
+  id: z.string().describe("Column ID (REQUIRED)"),
+  title: z.string().describe("Column title (REQUIRED)"),
+  color: z.string().nullable().optional(),
+  items: z.array(kanbanItemSchema).nullable().optional(),
 });
 
 // =============================================================================
@@ -184,13 +188,13 @@ export const kanbanColumnSchema = z.object({
 export const ganttTaskSchema: z.ZodType<Record<string, unknown>> = z.lazy(() =>
   z
     .object({
-      id: z.string(),
-      name: z.string(),
-      start: z.string(),
-      end: z.string(),
-      progress: z.number().nullable(),
-      dependencies: z.array(z.string()).nullable(),
-      subTasks: z.array(ganttTaskSchema).nullable(),
+      id: z.string().describe("Task ID (REQUIRED)"),
+      name: z.string().describe("Task name (REQUIRED)"),
+      start: z.string().describe("Start date (REQUIRED)"),
+      end: z.string().describe("End date (REQUIRED)"),
+      progress: z.number().nullable().optional(),
+      dependencies: z.array(z.string()).nullable().optional(),
+      subTasks: z.array(ganttTaskSchema).nullable().optional(),
     })
     .catchall(z.unknown()),
 );

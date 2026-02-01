@@ -21,30 +21,30 @@ declare const mindMapNodeSchema: z.ZodType<Record<string, unknown>>;
 declare const graphNodeSchema: z.ZodObject<{
     id: z.ZodString;
     label: z.ZodString;
-    description: z.ZodNullable<z.ZodString>;
-    group: z.ZodNullable<z.ZodString>;
-    type: z.ZodNullable<z.ZodString>;
-    color: z.ZodNullable<z.ZodString>;
-    size: z.ZodNullable<z.ZodNumber>;
-    icon: z.ZodNullable<z.ZodString>;
+    description: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+    group: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+    type: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+    color: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+    size: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
+    icon: z.ZodOptional<z.ZodNullable<z.ZodString>>;
 }, z.core.$catchall<z.ZodUnknown>>;
 declare const graphEdgeSchema: z.ZodObject<{
-    id: z.ZodNullable<z.ZodString>;
-    from: z.ZodNullable<z.ZodString>;
-    to: z.ZodNullable<z.ZodString>;
-    source: z.ZodNullable<z.ZodString>;
-    target: z.ZodNullable<z.ZodString>;
-    label: z.ZodNullable<z.ZodString>;
-    weight: z.ZodNullable<z.ZodNumber>;
-    directed: z.ZodNullable<z.ZodBoolean>;
-    color: z.ZodNullable<z.ZodString>;
+    id: z.ZodOptional<z.ZodString>;
+    from: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+    to: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+    source: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+    target: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+    label: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+    weight: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
+    directed: z.ZodOptional<z.ZodNullable<z.ZodBoolean>>;
+    color: z.ZodOptional<z.ZodNullable<z.ZodString>>;
 }, z.core.$strip>;
 declare const kanbanItemSchema: z.ZodType<Record<string, unknown>>;
 declare const kanbanColumnSchema: z.ZodObject<{
     id: z.ZodString;
     title: z.ZodString;
-    color: z.ZodNullable<z.ZodString>;
-    items: z.ZodNullable<z.ZodArray<z.ZodType<Record<string, unknown>, unknown, z.core.$ZodTypeInternals<Record<string, unknown>, unknown>>>>;
+    color: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+    items: z.ZodOptional<z.ZodNullable<z.ZodArray<z.ZodType<Record<string, unknown>, unknown, z.core.$ZodTypeInternals<Record<string, unknown>, unknown>>>>>;
 }, z.core.$strip>;
 declare const ganttTaskSchema: z.ZodType<Record<string, unknown>>;
 declare const emailItemSchema: z.ZodObject<{
